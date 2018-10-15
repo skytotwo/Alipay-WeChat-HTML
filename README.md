@@ -13,4 +13,4 @@
 ![image](https://github.com/skytotwo/Alipay-WeChat-HTML/raw/master/screencut_alipay.png)
 
 微信页面
-![image](https://github.com/skytotwo/Alipay-WeChat-HTML/raw/master/screencut_weixin.png)
+![image](https://github.com/skytotwo/Alipay-WeChat-HTML/raw/master/screencut_wechat.png)
