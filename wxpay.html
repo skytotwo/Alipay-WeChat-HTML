@@ -76,9 +76,9 @@
 <script type="text/javascript">    
 
     var myTimer;
-    var strcode = 'wxp://f2f1TAsLkbQ_-uZ7z6nx4CJ95U0zA3EUTzMP';
-    var outTime="300";
-    var intDiff="300";
+    var strcode = '二维码过期啦，请重新下单~~~';
+    var outTime="270";
+    var intDiff="270";
     var goTimerBegin =  new Date().getTime();
     var open_alipay_url = "alipays://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=wxp%3A%2F%2Ff2f1TAsLkbQ_-uZ7z6nx4CJ95U0zA3EUTzMP&_t=1539324529";
 
@@ -120,32 +120,31 @@
         }, 2000);
     }
 
-    function checkdata(){
-        $.post(
-            "/getresult",
-            {
-                paysapi_id : "794dce727b34ab678b5f4f01",
-            },
-            function(data){
-                if (data.code > 0){
+    function checkdata(){ //定时确认是否支付成功
+        $.ajax({
+            url:"https://bufpay.com/api/query/{{ returnjson.aoid }}",
+            dataType:"JSONP",
+            type:"get",
+            success:function(data){
+                if (data.status == "success" || data.status == "payed"){
                     window.clearInterval(myTimer);
-                    $("#show_qrcode").attr("src","./images/pay_ok.png");
+                    $("#show_qrcode").attr("src","{% static 'images/pay/pay_ok.png' %}");
                     $("#use").remove();
                     $("#money").text("支付成功");
                     $("#msg").html("<h1>即将返回商家页</h1>");
-                                            $("#msg").html("<h1>即将<a href='https://www.paysapi.com/'>跳转</a>回商家页</h1>");
+                                            $("#msg").html("<h1>即将<a href='/user/order/'>跳转</a>回商家页</h1>");
                         setTimeout(function(){
                             // window.location = data.url;
                             location.replace(data.url)
                         }, 3000);
-                                        
+
                 }
             }
-        );
+        })
     }
 
     function qrcode_timeout(){
-        $('#show_qrcode').attr("src","./images/qrcode_timeout.png");
+        $('#show_qrcode').attr("src","{% static 'images/pay/qrcode_timeout.png' %}");
         $("#use").hide();
         $('#msg').html("<h1>请刷新本页</h1>");
         
