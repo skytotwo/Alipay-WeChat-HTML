@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta name="apple-mobile-web-app-capable" content="no"/>
+    <meta name="apple-touch-fullscreen" content="yes"/>
+    <meta name="format-detection" content="telephone=no,email=no"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="white">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>支付宝</title>
+    <link href="./css/pay1.css" rel="stylesheet" media="screen">
+    <script type="text/javascript" src="https://cdn.staticfile.org/jquery/1.11.1/jquery.min.js"></script>
+</head>
+
+<body>
+<div class="body">
+    <h1 class="mod-title">
+        <span class="ico_log ico-1"></span>
+    </h1>
+
+    <div class="mod-ct">
+        <div class="order">
+        </div>
+        <div class="amount" id="money">￥0.10</div>
+        <div class ="paybtn" style = "display: none;">
+            <a href="alipays://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=HTTPS%3A%2F%2FQR.ALIPAY.COM%2FFKX01120AYXJ19IBZOZL9D&_t=1539323018" id="alipaybtn" class="btn btn-primary" target="_blank">启动支付宝App支付</a>
+        </div>
+        
+        <div class="qrcode-img-wrapper" data-role="qrPayImgWrapper">
+            <div data-role="qrPayImg" class="qrcode-img-area">
+                <div class="ui-loading qrcode-loading" data-role="qrPayImgLoading" ></div>
+                <div style="position: relative;display: inline-block;">
+                    <img  id="show_qrcode" width="300" height="300" src="https://pay.bbbapi.com/get_code_image_show_image?url=HTTPS%3A%2F%2FQR.ALIPAY.COM%2FFKX01120AYXJ19IBZOZL9D&show_expire_time=2018-10-12+13%3A49%3A38"  title="本二维码仅可支付一次,请勿重复使用,本二维码仅可支付一次,请勿重复使用,本二维码仅可支付一次,请勿重复使用,本二维码仅可支付一次,请勿重复使用"  style="display: block;">
+                    <img onclick="$('#use').hide()" id="use" src="./images/logo_alipay.png"
+                         style="position: absolute;top: 50%;left: 50%;width:32px;height:32px;margin-left: -16px;margin-top: -30px">                    
+                </div>
+            </div>
+        </div>
+                
+        <div class="time-item" style = "padding-top: 10px">
+                            <!--其他手机浏览器+支付宝支付-->
+                <div class="time-item" id="msg"><h1><h1>支付完成后，请返回此页</h1></div>
+                        <div class="time-item"><h1>订单:6b94165fbfaf7bda71d13826</h1> </div>
+                        <strong id="hour_show">0时</strong>
+            <strong id="minute_show">0分</strong>
+            <strong id="second_show">0秒</strong>
+        </div>
+        
+        <div class="tip">
+            <div class="ico-scan"></div>
+            <div class="tip-text">
+                                    <!--在PC里-->
+                    <p id="showtext">打开支付宝 [扫一扫]</p>
+                            </div>
+        </div>
+
+        <div class="tip-text">
+        </div>
+
+    </div>
+    <div class="foot">
+        <div class="inner" style="display:none;">
+            <p>手机用户可保存上方二维码到手机中</p>
+            <p>在微信扫一扫中选择“相册”即可</p>
+            <p></p>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">    
+
+    var myTimer;
+    var strcode = 'HTTPS://QR.ALIPAY.COM/FKX01120AYXJ19IBZOZL9D';
+    var outTime="300";
+    var intDiff="300";
+    var goTimerBegin =  new Date().getTime();
+    var open_alipay_url = "alipays://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=HTTPS%3A%2F%2FQR.ALIPAY.COM%2FFKX01120AYXJ19IBZOZL9D&_t=1539323018";
+
+    $(document).on('visibilitychange', function (e) {
+        if (e.target.visibilityState === "visible") {
+            var s = Math.floor((parseInt(new Date().getTime())-parseInt(goTimerBegin))/1000);
+            intDiff = outTime-s;
+            $("#show_qrcode").attr("src",$("#show_qrcode").attr("src"));
+        }
+    });
+
+    function goTimer() {
+        myTimer = window.setInterval(function () {
+            var day = 0,
+                hour = 0,
+                minute = 0,
+                second = 0;//时间默认值
+            if (intDiff > 0) {
+                day = Math.floor(intDiff / (60 * 60 * 24));
+                hour = Math.floor(intDiff / (60 * 60)) - (day * 24);
+                minute = Math.floor(intDiff / 60) - (day * 24 * 60) - (hour * 60);
+                second = Math.floor(intDiff) - (day * 24 * 60 * 60) - (hour * 60 * 60) - (minute * 60);
+            }
+            if (minute <= 9) minute = '0' + minute;
+            if (second <= 9) second = '0' + second;
+            $('#hour_show').html('<s id="h"></s>' + hour + '时');
+            $('#minute_show').html('<s></s>' + minute + '分');
+            $('#second_show').html('<s></s>' + second + '秒');
+            if (hour <= 0 && minute <= 0 && second <= 0) {
+                qrcode_timeout();
+                clearInterval(myTimer);
+            }
+            intDiff = intDiff-2;
+            
+            if (strcode != ""){
+                checkdata();
+            }
+            
+        }, 2000);
+    }
+
+    function checkdata(){
+        $.post(
+            "/getresult",
+            {
+                paysapi_id : "7d749c69f4a1d46f6f50e228",
+            },
+            function(data){
+                if (data.code > 0){
+                    window.clearInterval(myTimer);
+                    $("#show_qrcode").attr("src","./images/pay_ok.png");
+                    $("#use").remove();
+                    $("#money").text("支付成功");
+                    $("#msg").html("<h1>即将返回商家页</h1>");
+                                            $("#msg").html("<h1>即将<a href='https://www.paysapi.com/'>跳转</a>回商家页</h1>");
+                        setTimeout(function(){
+                            // window.location = data.url;
+                            location.replace(data.url)
+                        }, 3000);
+                                        
+                }
+            }
+        );
+    }
+
+    function qrcode_timeout(){
+        $('#show_qrcode').attr("src","./images/qrcode_timeout.png");
+        $("#use").hide();
+        $('#msg').html("<h1>请刷新本页</h1>");
+        
+    }
+    $().ready(function(){    
+        $('#show_qrcode').error(function(){
+            $("#show_qrcode").attr("src","https://www.kuaizhan.com/common/encode-png?large=true&data="+strcode);
+        });
+        //默认6分钟过期
+        goTimer();
+            });
+
+
+
+
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?ca69aec66f867486468c7731605b365d";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+    })();
+    //
+</script>
+</body>
+</html>
